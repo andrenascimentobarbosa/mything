@@ -1,0 +1,7 @@
+server-side error: 
+
+
+Traceback (most recent call last):
+  File "/home/andre/mything/remote_shell/server.py", line 21, in <module>
+    server.send(comm.encode())
+BrokenPipeError: [Errno 32] Broken pipe
