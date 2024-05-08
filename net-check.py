@@ -4,7 +4,7 @@
 
 from requests import get
 
-r = get('https://www.facebook.com')
+r = get('https://github.com/andrenascimentobarbosa/mything')
 
 if r.status_code == 200:
     print('\033[1;32m[+] Connected\033[m')
