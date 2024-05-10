@@ -10,7 +10,7 @@ from PIL import ImageGrab
 # take a screenshot
 def screenshot():
     shot = ImageGrab.grab()
-    shot.save(f'screenshotpng')
+    shot.save(f'screenshot.png')
     shot.close()
 
 
