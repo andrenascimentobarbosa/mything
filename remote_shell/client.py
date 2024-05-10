@@ -28,6 +28,9 @@ while True:
         except subprocess.CalledProcessError as e:
             error_msg = f'Error excuting command: {comm}\n{e}'
             client.send(error_msg.encode())
+        except (ValueError, TypeError) as e:
+            error_msg = f'\nError: {e}'
+            client.send(error_msg.encode())
 
 # close the connection.
 client.close()
