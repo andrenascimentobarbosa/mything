@@ -2,8 +2,6 @@
 
 # import modules
 import socket
-import os
-import threading
 import subprocess
 
 
