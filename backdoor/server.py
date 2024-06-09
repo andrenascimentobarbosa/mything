@@ -5,7 +5,7 @@ import socket
 import os
 
 # define host and port
-host = '127.0.0.1'
+host = '172.22.254.158'
 port = 8080
 
 
