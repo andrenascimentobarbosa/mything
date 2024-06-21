@@ -1,28 +1,44 @@
-# import request the used get function.
+#!/usr/bin/python3
+
+
+"""
+like-dirb tool, search for hidden pages on a web application returnin Try or False.
+"""
+ 
+
+
+# modules
 from requests import get
+import sys
 
-#base_url = 'https://site.com'.
-base_url = ''
 
-# path list
-paths = ['robots.txt', 'login', 'wp-login.php', 'adminstrator',
-        'admin', 'adm', 'assets', 'uploads', 'backup', 'analytics']
-# will try one by one and make it off all the ones tha return 200 (OK) status code.
-try:
-    r = get(base_url)
-    if r.status_code == 200:
-        print('\033[1;32m[+]\033[m Connected: ', base_url)
-        print()
-        for w in paths:
-            url = f'{base_url}/{w}'
-            r = get(url)
-            if r.status_code == 200:
-                print(f'\033[1;32m[+]\033[m True: {url}')
-            else:
-                print(f'\033[1;31m[-]\033[m False: {url}')
+def main(url, file):
+    test  = get(url)
+    if test.status_code == 200:
+        print(f'\033[1;32mOK\033[m {test.status_code}')
+        print(f'Search for pages on {url}')
+        with open(file, 'r') as f:
+            lines = f.readlines()
+            for l in lines:
+                new_url = f'{url}/{l}'
+                r = get(new_url)
+                if r.status_code == 200:
+                    print(f'\033[1;32m[+]\033[m True: {new_url}')
+                    with open('found_ones.txt', 'w+') as f:
+                        f.write('{new_url}\n')
+                else:
+                    print(f'\033[1;31m[-]\033[m False: {new_url}')
+
     else:
-        print(f"Couldn't connect due the error: {r.status_code}")
-except Exception as e:
-    print('Error: ', e)
+        print('\033[1:31mError:\033[m {test.status_code}')
+        sys.exit(1)
 
 
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("\nUsage: ./script.py https://site.com list.txt\n")
+        sys.exit(1)
+
+    url = sys.argv[1]
+    file = sys.argv[2]
+    main(url, file)
