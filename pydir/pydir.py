@@ -38,7 +38,9 @@ def main(url, file):
                             print(f'\033[1;31m[-]\033[m False: {new_url}'.strip())
 
             else:
-                print('\033[1:31mError:\033[m {test.status_code}')
+                print(f'\033[1:31mError:\033[m {test.status_code}')
+                if test.status_code == 418:
+                    print("I'm a teapot\nsee more: https://stackoverflow.com/questions/52340027/is-418-im-a-teapot-really-an-http-response-code")
                 sys.exit(1)
         except Exception as e:
             print(f"\033[1;31mError:\033[m Coundnt't access {url} due the error {e}")
